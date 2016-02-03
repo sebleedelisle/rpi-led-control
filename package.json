@@ -1,6 +1,6 @@
 {
   "name": "rpi-led-control",
-  "version": "0.0.1",
+  "version": "0.0.3",
   "description": "Control 7 segment LED displays and matrixes that use the MAX7219 chip with a Raspberry Pi",
   "main": "rpi-led-control.js",
   "scripts": {
@@ -8,7 +8,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "github.com/sebleedelisle/rpi-led-control"
+    "url": "https://github.com/sebleedelisle/rpi-led-control.git"
   },
   "keywords": [
     "hardware",
