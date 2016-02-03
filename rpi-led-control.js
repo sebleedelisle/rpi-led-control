@@ -78,9 +78,20 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			'°' : parseInt('1100011',2)
 			};
 
-	var numDevices = typeof numDevices !== 'undefined' ?  numDevices : 1;
-	numDevices = constrain(numDevices, 1,8); 
+	// var numDevices = typeof numDevices !== 'undefined' ?  numDevices : 1;
+	// 	numDevices = constrain(numDevices, 1,8); 
+	// 	
+	if(typeof numDevices === 'undefined') { 
+		numDevices = 1; 
+	} else { 
+		if(typeof numDevices !== 'number' || numDevices<1 || numDevices>8) { 
+			throw 'numDevices must be a number between 1 and 8'; 
+		}
+	}
+	
 	var maxDevices = numDevices; 
+	
+	
 	
 	var spiMosi= new Gpio(dataPin, 'out'); 
 	var spiClk = new Gpio(clkPin, 'out'); 
@@ -292,18 +303,8 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 	}
 
     /* 
-     * Display a character on a 7-Segment display.
-     * There are only a few characters that make sense here :
-     *	'0','1','2','3','4','5','6','7','8','9','0',
-     *  'A','b','c','d','E','F','H','L','P',
-     *  '.','-','_',' ' 
-     * Params:
-     * addr	address of the display
-     * digit	the position of the character on the display (0..7)
-     * value	the character to be displayed. 
-     * dp	sets the decimal point.
      */
-    function setChar(addr, digit, value, dp){
+    function setChar(addr, digit, char, dp){
 		if(addr<0 || addr>=maxDevices)
 			throw 'address out of range';
 	    if(digit<0 || digit>7) 

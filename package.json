@@ -1,8 +1,8 @@
 {
   "name": "rpi-led-control",
-  "version": "1.0.0",
+  "version": "0.0.1",
   "description": "Control 7 segment LED displays and matrixes that use the MAX7219 chip with a Raspberry Pi",
-  "main": "index.js",
+  "main": "rpi-led-control.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
