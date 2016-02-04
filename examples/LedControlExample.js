@@ -36,7 +36,7 @@ function loop() {
 }
 function loop2() { 
 	lc2.clearDisplay(); 
-	lc2.showNumber(0, (Date.now()-startTime)/20, 0, 3, false, 3, true) 
+	lc2.showNumber(0, (Date.now()-startTime)/20, 1, 4, false, 3, true) 
 	lc2.showNumber(0, (Date.now()-startTime)/100, 0, 3, false, 7, true); 
 	
 	if(Date.now()-startTime>100000) startTime = Date.now();
