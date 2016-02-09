@@ -30,7 +30,7 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 		   *  e|___|c  dp (decimal point)
 		   *     d    * */
 		
-	var charTable = {
+	const charTable = {
 			'0' : parseInt('1111110',2), 
 			'1' : parseInt('0110000',2), 
 			'2' : parseInt('1101101',2), 
@@ -75,12 +75,13 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			'(' : parseInt('1001110',2), 
 			']' : parseInt('1111000',2), 
 			')' : parseInt('1111000',2), 
-			'°' : parseInt('1100011',2)
+			'°' : parseInt('1100011',2),
+			'\!' : parseInt('10100000',2),
+			'\'' : parseInt('0100000',2),
+			'\.' : parseInt('10000000',2),
+			
 			};
 
-	// var numDevices = typeof numDevices !== 'undefined' ?  numDevices : 1;
-	// 	numDevices = constrain(numDevices, 1,8); 
-	// 	
 	if(typeof numDevices === 'undefined') { 
 		numDevices = 1; 
 	} else { 
@@ -90,8 +91,6 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 	}
 	
 	var maxDevices = numDevices; 
-	
-	
 	
 	var spiMosi= new Gpio(dataPin, 'out'); 
 	var spiClk = new Gpio(clkPin, 'out'); 
@@ -248,10 +247,6 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			throw 'address out of range';
 		
 		num = formatNumber(num, decimalplaces, mindigits); 
-		
-		// leftjustified = true;
-		// pos = 2;
-		// dontclear = true;
 	
 		// internally, pos is 0 on the right, so we set defaults, and convert
 		if(typeof pos === 'undefined') { 
@@ -262,17 +257,14 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			}
 		} else pos = 7-pos; 
 		
-		
+		// get rid of the decimal place but remember where it was
 		var decimalplace = num.length - num.indexOf('.')-1; 
-		if(decimalplace!=-1) num = num.split('.').join(''); 
-		if(typeof mindigits ==='number') { 
-			while(num.length<mindigits) num = '0'+num; 
-		}
+		if(decimalplace!=-1) num = num.split('.').join('');
+
 		if(leftjustified) { 
 			pos-=(num.length-1); 
 		}
-		
-				
+	
 		for(var i = 0; i<8; i++) { 
 			var offset = i+pos; 
 			var char = num.charAt(num.length-1-i); 
@@ -281,23 +273,26 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 				setDigit(addr, offset, parseInt(char), i>0 && i==decimalplace); 
 			
 		}
-		
-		
-		
+	
 	}
 	this.showNumber = showNumber; 
 	
 	function formatNumber(num, decimalplaces, mindigits) { 
 		if(typeof decimalplaces !=='undefined') { 
-			num = (Math.round(num*Math.pow(10,decimalplaces))) / Math.pow(10,decimalplaces);
-			var parts = num.toString().split('.');
-			// no decimal point 
-			if (parts.length ==1) parts.push('');   
-			while(parts[1].length<decimalplaces) parts[1] = parts[1]+'0'; 
-			num = parts.join('.'); 
+			num = num.toFixed(decimalplaces); 
 		} else { 
 			num = num.toString(); 
 		}
+		
+		// if there's a decimal point then increase the mindigits by one
+		// to compensate
+		if(num.indexOf('.')>=0) mindigits++; 
+		
+		
+		if(typeof mindigits ==='number') { 
+			while(num.length<mindigits) num = '0'+num; 
+		}
+		
 		return num; 
 		
 	}
@@ -312,7 +307,7 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			
 			
 		var offset = addr*8;
-		var v = charTable[value] || charTable[value.toLowerCase()];//.toString(16)]; 
+		var v = charTable[char] || charTable[char.toLowerCase()];//.toString(16)]; 
 		
 
 		if(dp) v|=0x80; // set the decimal point bit if necessary
