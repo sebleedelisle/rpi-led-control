@@ -247,6 +247,7 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			throw 'address out of range';
 		
 		num = formatNumber(num, decimalplaces, mindigits); 
+		console.log(num); 
 	
 		// internally, pos is 0 on the right, so we set defaults, and convert
 		if(typeof pos === 'undefined') { 
@@ -258,9 +259,12 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 		} else pos = 7-pos; 
 		
 		// get rid of the decimal place but remember where it was
-		var decimalplace = num.length - num.indexOf('.')-1; 
-		if(decimalplace!=-1) num = num.split('.').join('');
-
+		var decimalplace; 
+		if(num.indexOf('.')<0) decimalplace = -1; 
+		else {
+			decimalplace = num.length - num.indexOf('.') -1; 
+			num = num.split('.').join('');
+		}
 		if(leftjustified) { 
 			pos-=(num.length-1); 
 		}
@@ -270,14 +274,23 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			var char = num.charAt(num.length-1-i); 
 			
 			if((offset<8 && offset>=0) && (!dontclear || char!='')) 
-				setDigit(addr, offset, parseInt(char), i>0 && i==decimalplace); 
-			
+			{
+				if(char=='-') setChar(addr, offset, char, i>0 && i==decimalplace); 
+				else setDigit(addr, offset, parseInt(char), i>0 && i==decimalplace); 
+			}
 		}
 	
 	}
 	this.showNumber = showNumber; 
 	
 	function formatNumber(num, decimalplaces, mindigits) { 
+		var minus = false; 
+		
+		if(num<0) {
+			minus = true;
+			num = Math.abs(num); 
+		} 
+	
 		if(typeof decimalplaces !=='undefined') { 
 			num = num.toFixed(decimalplaces); 
 		} else { 
@@ -286,13 +299,12 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 		
 		// if there's a decimal point then increase the mindigits by one
 		// to compensate
-		if(num.indexOf('.')>=0) mindigits++; 
-		
 		
 		if(typeof mindigits ==='number') { 
+			if(num.indexOf('.')>=0) mindigits++; 
 			while(num.length<mindigits) num = '0'+num; 
 		}
-		
+		if(minus) num = '-'+num; 
 		return num; 
 		
 	}
