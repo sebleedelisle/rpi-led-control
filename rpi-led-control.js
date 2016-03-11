@@ -247,7 +247,6 @@ module.exports = function(dataPin, clkPin, csPin, numDevices) {
 			throw 'address out of range';
 		
 		num = formatNumber(num, decimalplaces, mindigits); 
-		console.log(num); 
 	
 		// internally, pos is 0 on the right, so we set defaults, and convert
 		if(typeof pos === 'undefined') { 
