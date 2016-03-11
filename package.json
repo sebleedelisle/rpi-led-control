@@ -1,6 +1,6 @@
 {
   "name": "rpi-led-control",
-  "version": "0.0.4",
+  "version": "0.1.0",
   "description": "Use your Raspberry Pi to control 7 segment LED displays and LED matrixes that incorporate the MAX7219 chip. These devices are widely and cheaply available online. You can connect the displays to any 3 of the Raspberry Pi GPIO pins and you can daisy chain 8 of the devices together.",
   "main": "rpi-led-control.js",
   "scripts": {
